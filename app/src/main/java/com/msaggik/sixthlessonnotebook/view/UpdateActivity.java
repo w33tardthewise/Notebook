@@ -45,6 +45,8 @@ public class UpdateActivity extends AppCompatActivity {
         deleteNote.setOnClickListener(listener);
     }
 
+
+
     // задание слушателя
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override

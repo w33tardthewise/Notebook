@@ -26,10 +26,14 @@ public class SecondActivity extends AppCompatActivity {
     private RecyclerView recyclerView; // поле для списка RecyclerView
     private FloatingActionButton fabAdd; // поле для кнопки добавить новую заметку
 
+    private FloatingActionButton fabDelete;
+
     private List<Notebook> notesList; // поле для контейнера списка заметок
 
     private DatabaseHelper database; // поле работы с БД
     private Adapter adapter; // поле для адаптера
+
+
 
 
     @Override
@@ -40,6 +44,7 @@ public class SecondActivity extends AppCompatActivity {
         // присваивание id полям
         recyclerView = findViewById(R.id.recycler_list);
         fabAdd = findViewById(R.id.fabAdd);
+        fabDelete = findViewById(R.id.fabDelete);
 
         notesList = new ArrayList<>(); // выделение памяти и задание типа контейнера для списка заметок
         database = new DatabaseHelper(this); // выделение памяти и задание текущего контекста работы с БД
@@ -51,15 +56,26 @@ public class SecondActivity extends AppCompatActivity {
         adapter = new Adapter(this, SecondActivity.this, notesList); // инициализация адаптера и передача в рего данных из БД
         recyclerView.setAdapter(adapter); // передача в recyclerView адаптер
 
-        // обработка нажатия кнопки создания новой заметки
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // переключение на новую активность
-                startActivity(new Intent(SecondActivity.this, AddNotesActivity.class));
-            }
-        });
+        fabAdd.setOnClickListener(onClickListener);
+        fabDelete.setOnClickListener(onClickListener);
+
     }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.fabAdd:
+                    startActivity(new Intent(SecondActivity.this, AddNotesActivity.class));
+                    break;
+                case R.id.fabDelete:
+                    database.deleteAllNotes();
+                    startActivity(new Intent(SecondActivity.this, SecondActivity.class));
+                    break;
+            }
+        }
+    };
 
     // метод считывания из БД всех записей
     public void fetchAllNotes(){
